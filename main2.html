@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+   <title></title>
+   <!-- Latest compiled and minified CSS -->
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+   <!-- Optional theme -->
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+   <!-- Latest compiled and minified JavaScript -->
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+   <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+   <script type="text/javascript" charset="utf-8">
+      $(document).ready(function() {
+        var socket = io.connect('http://' + document.domain + ':' + 8182);
+        socket.on('connect', function() {
+          socket.emit('my event', {data: 'I\'m connected!'});
+        });
+        socket.on('dht_temperature', function(msg) {
+          var nDate = new Date();
+          $('#readingsUpdated').text(nDate.getHours() + 'h:' + nDate.getMinutes() +
+             'm:' + nDate.getSeconds() + 's').html();
+          $('#temperature').text(msg.data).html();
+        });
+        socket.on('dht_humidity', function(msg) {
+          $('#humidity').text(msg.data).html();
+        });
+      });
+   </script>
+</head>
+
+<style>
+
+{
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.topnav {
+  overflow: hidden;
+  background-color: #333;
+}
+
+.topnav a {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.topnav .icon {
+  display: none;
+}
+
+@media screen and (max-width: 600px) {
+  .topnav a:not(:first-child) {display: none;}
+  .topnav a.icon {
+    float: right;
+    display: block;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .topnav.responsive {position: relative;}
+  .topnav.responsive .icon {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .topnav.responsive a {
+    float: none;
+    display: block;
+    text-align: left;
+  }
+}
+
+
+</style>
+  <body>
+
+<div class="topnav" id="myTopnav">
+  <a href="../web-server/templates/index.html" class="active">Accueil</a>
+  <a href="../templates/main3.html">Temperature radiateur</a>
+  <a href="../templates/main2.html">Temperature salle</a>
+  <a href="../templates/main1.html">Temperature exterieur</a>
+  <li style="float:right"><a href="#">Titan 2.0</a></li>
+  <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="myFunction()">&#9776;</a>
+</div>
+
+  </div>
+
+
+      <div class="container-fluid">
+	  <link href="/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+      <script src="/<js/bootstrap.min.js"></script>
+      <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+	  </div>
+
+ <!-- Main jumbotron for a primary marketing message or call to action -->
+      <div class="jumbotron.css">
+        <div class="container">
+         
+       <br><br><center><h3 style="font-size:5vw;">Temperature Salle</h3></center>
+		  <br></br>
+<body>
+  <!-- {% for pin in pins %}
+   <h2>{{ pins[pin].name }}
+   {% if pins[pin].state == 'True' %}
+      is currently <strong>on</strong></h2><div class="row"><div class="col-md-2">
+      </div></div> 
+   {% else %}
+      is currently <strong>off</strong></h2><div class="row"><div class="col-md-2">
+     </div></div>
+   {% endif %}
+   {% endfor %}-->
+   <h3>DHT 2 (updated <span id="readingsUpdated"></span>)</h3>
+   <h3>Température: <span id="temperature"></span>ºC</h3>
+   <h3>Humidité: <span id="humidity"></span>%</h3>
+<!-- /////////////////////////////////////////////////-->
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Graphique des temperatures de salle</title>
+
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+
+//settings BEGIN
+	//var MQTTbroker = '192.168.0.44';
+	var MQTTbroker = '192.168.43.175';
+	//var MQTTbroker = '192.168.43.97';
+	var MQTTport = 1884;
+	var MQTTsubTopic = '/esp2/temperature/#';
+	var MQTTsubTopic1 = '/esp2/humidity/#';
+
+//settings END
+
+	var chart; // global variuable for chart
+	var dataTopics = new Array();
+
+//mqtt broker 
+	var client = new Paho.MQTT.Client(MQTTbroker, MQTTport,
+				"myclientid_" + parseInt(Math.random() * 100, 10));
+	client.onMessageArrived = onMessageArrived;
+	client.onConnectionLost = onConnectionLost;
+	//connect to broker is at the bottom of the init() function !!!!
+	
+
+//mqtt connecton options including the mqtt broker subscriptions
+	var options = {
+		timeout: 3,
+		onSuccess: function () {
+			console.log("mqtt connected");
+			// Connection succeeded; subscribe to our topics
+			client.subscribe(MQTTsubTopic, {qos: 1});
+			client.subscribe(MQTTsubTopic1, {qos: 1});
+		},
+		onFailure: function (message) {
+			console.log("Connection failed, ERROR: " + message.errorMessage);
+			//window.setTimeout(location.reload(),20000); //wait 20seconds before trying to connect again.
+		}
+	};
+
+//can be used to reconnect on connection lost
+	function onConnectionLost(responseObject) {
+		console.log("connection lost: " + responseObject.errorMessage);
+		//window.setTimeout(location.reload(),20000); //wait 20seconds before trying to connect again.
+	};
+
+//what is done when a message arrives from the broker
+	function onMessageArrived(message) {
+		console.log(message.destinationName, '',message.payloadString);
+
+		//check if it is a new topic, if not add it to the array
+		if (dataTopics.indexOf(message.destinationName) < 0){
+		    
+		    dataTopics.push(message.destinationName); //add new topic to array
+		    var y = dataTopics.indexOf(message.destinationName); //get the index no
+		    
+		    //create new data series for the chart
+			var newseries = {
+		            id: y,
+		            name: message.destinationName,
+		            data: []
+		            };
+
+			chart.addSeries(newseries); //add the series
+		    
+		};
+		 
+		var y = dataTopics.indexOf(message.destinationName); //get the index no of the topic from the array
+		var myEpoch = new Date().getTime(); //get current epoch time
+		var thenum = message.payloadString.replace( /^\D+/g, ''); //remove any text spaces from the message
+		thenum = thenum.replace("}",'');
+		thenum = thenum.replace("\"",'');
+		console.log(thenum, '',thenum);
+		var plotMqtt = [myEpoch, Number(thenum)]; //create the array
+		if (isNumber(thenum)) { //check if it is a real number and not text
+			console.log('is a propper number, will send to chart.')
+			plot(plotMqtt, y);	//send it to the plot function
+		};
+	};
+
+//check if a real number	
+	function isNumber(n) {
+	  return !isNaN(parseFloat(n)) && isFinite(n);
+	};
+
+//function that is called once the document has loaded
+	function init() {
+
+		//i find i have to set this to false if i have trouble with timezones.
+		Highcharts.setOptions({
+			global: {
+				useUTC: false
+			}
+		});
+
+		// Connect to MQTT broker
+		client.connect(options);
+
+	};
+
+
+//this adds the plots to the chart	
+    function plot(point, chartno) {
+    	console.log(point);
+    	
+	        var series = chart.series[0],
+	            shift = series.data.length > 20; // shift if the series is 
+	                                             // longer than 20
+	        // add the point
+	        chart.series[chartno].addPoint(point, true, shift);  
+
+	};
+
+//settings for the chart
+	$(document).ready(function() {
+	    chart = new Highcharts.Chart({
+	        chart: {
+	            renderTo: 'container',
+	            defaultSeriesType: 'spline'
+	        },
+	        title: {
+	            text: 'Graphique des temperatures de salle'
+	        },
+	        subtitle: {
+                                text: 'broker: ' + MQTTbroker + ' | port: ' + MQTTport + ' | topic : ' + MQTTsubTopic + MQTTsubTopic1
+                         },
+	        xAxis: {
+	            type: 'datetime',
+	            tickPixelInterval: 150,
+	            maxZoom: 20 * 1000
+	        },
+	        yAxis: {
+	            minPadding: 0.2,
+	            maxPadding: 0.2,
+	            title: {
+	                text: 'Value',
+	                margin: 80
+	            }
+	        },
+	        series: []
+	    });        
+	});
+
+</script>
+
+<script src="http://code.highcharts.com/stock/highstock.js"></script>
+<script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
+
+</head>
+<body>
+<body onload="init();"><!--Start the javascript ball rolling and connect to the mqtt broker-->
+
+
+
+<div id="container" style="height: 500px; min-width: 500px"></div><!-- this the placeholder for the chart-->
+
+</body>
+</html>
